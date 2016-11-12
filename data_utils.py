@@ -191,7 +191,7 @@ INPUT_TRAIN_FILENAME="chat_train.in"
 OUTPUT_DEV_FILENAME="chat_dev.out"
 OUTPUT_TRAIN_FILENAME="chat_train.out"
 
-def prepare_chat_data(data_dir, input_vocabuary_size, output_vocabulary_size, tokenizer=None):
+def prepare_chat_data(data_dir, input_vocabulary_size, output_vocabulary_size, tokenizer=None):
   """Get WMT data into data_dir, create vocabularies and tokenize data.
 
   Args:
@@ -210,11 +210,11 @@ def prepare_chat_data(data_dir, input_vocabuary_size, output_vocabulary_size, to
       (5) path to the English vocabulary file,
       (6) path to the French vocabulary file.
   """
-  input_vocab_path = os.path.join(data_dir, "vocab%d.in" % input_vocabuary_size)
+  input_vocab_path = os.path.join(data_dir, "vocab%d.in" % input_vocabulary_size)
   output_vocab_path = os.path.join(data_dir, "vocab%d.out" % output_vocabulary_size)
 
   # Create vocabularies of the appropriate sizes.
-  input_vocab_path = os.path.join(data_dir, "vocab%d.in" % input__vocabulary_size)
+  input_vocab_path = os.path.join(data_dir, "vocab%d.in" % input_vocabulary_size)
   output_vocab_path = os.path.join(data_dir, "vocab%d.out" % output_vocabulary_size)
   create_vocabulary(input_vocab_path, train_path + ".fr", input_vocabulary_size, tokenizer)
   create_vocabulary(output_vocab_path, train_path + ".en", output_vocabulary_size, tokenizer)

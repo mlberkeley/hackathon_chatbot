@@ -48,7 +48,9 @@ _DIGIT_RE = re.compile(br"\d")
 def basic_tokenizer(sentence):
   """Very basic tokenizer: split the sentence into a list of tokens."""
   words = []
+  print(sentence)
   for space_separated_fragment in sentence.strip().split():
+    print(space_separated_fragment)
     words.extend(_WORD_SPLIT.split(space_separated_fragment))
   return [w for w in words if w]
 
@@ -219,20 +221,20 @@ def prepare_chat_data(data_dir, input_vocabulary_size, output_vocabulary_size, t
   # Create vocabularies of the appropriate sizes.
   input_vocab_path = os.path.join(data_dir, "vocab%d.in" % input_vocabulary_size)
   output_vocab_path = os.path.join(data_dir, "vocab%d.out" % output_vocabulary_size)
-  create_vocabulary(input_vocab_path, train_path + ".fr", input_vocabulary_size, tokenizer)
-  create_vocabulary(output_vocab_path, train_path + ".en", output_vocabulary_size, tokenizer)
+  create_vocabulary(input_vocab_path, "inputVocab.txt", input_vocabulary_size, tokenizer)
+  create_vocabulary(output_vocab_path, "outputVocab.txt", output_vocabulary_size, tokenizer)
 
   # Create token ids for the training data.
   input_train_ids_path = train_path + (".ids%d.in" % input_vocabulary_size)
   output_train_ids_path = train_path + (".ids%d.out" % output_vocabulary_size)
-  data_to_token_ids(train_path + ".out", output_train_ids_path, output_vocab_path, tokenizer)
-  data_to_token_ids(train_path + ".in", input_train_ids_path, input_vocab_path, tokenizer)
+  data_to_token_ids("outputVocab.txt", output_train_ids_path, output_vocab_path, tokenizer)
+  data_to_token_ids("inputVocab.txt", input_train_ids_path, input_vocab_path, tokenizer)
 
   # Create token ids for the development data.
   input_dev_ids_path = dev_path + (".ids%d.in" % input_vocabulary_size)
   output_dev_ids_path = dev_path + (".ids%d.out" % output_vocabulary_size)
-  data_to_token_ids(dev_path + ".in", input_dev_ids_path, input_vocab_path, tokenizer)
-  data_to_token_ids(dev_path + ".out", output_dev_ids_path, output_vocab_path, tokenizer)
+  data_to_token_ids("inputVocab.txt", input_dev_ids_path, input_vocab_path, tokenizer)
+  data_to_token_ids("outputVocab.txt", output_dev_ids_path, output_vocab_path, tokenizer)
 
   return (input_train_ids_path, output_train_ids_path,
           input_dev_ids_path, output_dev_ids_path,

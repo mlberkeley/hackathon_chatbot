@@ -60,3 +60,27 @@ def parseCorpus(filename):
 	parser.feed(data)
 	parser.sortThreads()
 	return parser.threads
+
+def createVocabFiles(filename, user):
+	threads = parseCorpus(filename)
+	with open('inputVocab.txt', 'w') as f1:
+		with open('outputVocab.txt', 'w') as f2:
+			for thread in threads:
+				pair = ['', '']
+				responseNext = False
+				pairFinished = False
+				for message in thread['messages']:
+					if message['sender'] == user and not responseNext:
+						if 'content' in message:
+							pair[0] += re.sub(r'\\n', r'', message['content'])
+							responseNext = True
+					elif responseNext and not pairFinished:
+						if 'content' in message:
+							pair[1] += re.sub(r'\\n', r'', message['content'])
+							pairFinished = True
+					elif pairFinished:
+						f2.write(pair[0] + '\n')
+						f1.write(pair[1] + '\n')
+						pairFinished = False
+						responseNext = False
+						pair = ['', '']

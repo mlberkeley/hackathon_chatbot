@@ -210,6 +210,9 @@ def prepare_chat_data(data_dir, input_vocabulary_size, output_vocabulary_size, t
       (5) path to the English vocabulary file,
       (6) path to the French vocabulary file.
   """
+  train_path = os.path.join(data_dir, "chat_train")
+  dev_path = os.path.join(data_dir, "chat_dev")
+
   input_vocab_path = os.path.join(data_dir, "vocab%d.in" % input_vocabulary_size)
   output_vocab_path = os.path.join(data_dir, "vocab%d.out" % output_vocabulary_size)
 

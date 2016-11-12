@@ -39,12 +39,9 @@ class Conversation_FW(WatsonDeveloperCloudService):
 
         if self.tf_embed_url!=None:
             #reformat request to tf_embed layer
-            resp = self.request(method='POST', url=self.tf_embed_url, params=params,
+            return self.request(method='POST', url=self.tf_embed_url, params=params,
                             json=TF_data, accept_json=True)
 
-            if self.tf_process_url:
-                #send to tf_process
-                #return final output
 
         data = {'input': message_input,
                 'context': context,

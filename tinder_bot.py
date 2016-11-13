@@ -3,7 +3,7 @@ import time
 
 
 FBID = '122078121605611'
-FBTOKEN = 'EAAGm0PX4ZCpsBACTtykJouoGL3zSikIZCX0rc1eanvqzjeNJ3E3HXp8mQw29pMSReQ1SwjGEsUZA6ZBbBbkZCIjrZBgGWyZBGR8ZAZC9cjcytELDqrUyZCJaYwi9dzod4yyLVYYVWNd4EGVkgLnienbWh46EwxrakQE8NYsFUiz7RrMAtdo49N5hnZB9Y44qv7fhRj7zWSC4gGvKIijT5k3hBbbSggXKRJKziGNajsO4BOE9FXmq5aqSRcL'
+FBTOKEN = 'EAAGm0PX4ZCpsBAJJJPffLJYmCXLZAlfIgiq2ZBgx3e7mvHbWR63PztvONLwtNFVOgtWy0ufhCfIXcdQJD2Q43ZAIuE03PfIYFOgbUJ6TOtMjvU1G2QmJsW3wwLPGjFcHRoOQaF6m7w6BZCxfTSIsKv35ZA6vdPAWPk1US9jzTBCfri4H5VpTgff4MdTD73rS9Gxajy4abaLdZCAfpZCVJCDLck5NvHoArLe4VMo7mXFzJZBvfL2fNvSn1'
 
 
 session = pynder.Session(FBID, FBTOKEN)
@@ -36,7 +36,7 @@ def get_recent_messages(session):
 
 def like_users(session):
     users = session.nearby_users()
-    for user in users[:3]:
+    for user in users[:50]:
         user.like()
 
 

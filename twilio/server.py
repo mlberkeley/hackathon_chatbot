@@ -43,7 +43,7 @@ class TwilioService:
 def index():
     messages=twiliosesh.get_recent_messages()
 
-	url = 'http://127.0.0.1/3000'
+	url = 'http://127.0.0.1:3000/synthesize'
 
 	data = messages[0]
 	result = requests.post(url, json=json.dumps(data))
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # Get host/port from the Bluemix environment, or default to local
     #TODO: Change this so that it can run on cycle
     HOST_NAME = os.getenv("VCAP_APP_HOST", "127.0.0.1")
-    PORT_NUMBER = int(os.getenv("VCAP_APP_PORT", "3000"))
+    PORT_NUMBER = int(os.getenv("VCAP_APP_PORT", "8080"))
 
     app.run(host=HOST_NAME, port=int(PORT_NUMBER), debug=True)
 

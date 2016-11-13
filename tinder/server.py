@@ -9,7 +9,7 @@ class PynderService:
 
     def __init__(self):
         FBID = '122078121605611'
-        FBTOKEN = 'EAAGm0PX4ZCpsBAE3Ang4k9gAlcOCwdCgCzzYZCi0Uz0jLvc8yTTFAlRDZAFpxdbBV1PrSkr0LPwrnjlMLQezUEMT2bl9kFiPOFKMvpMktM6Fi7W8ZAYntldPy86gLZCzsmZBRQTeJbaHaJuuXYhLucrduYbODT2oo8t71dtQ2egxn69wSZBK0oGarm0iJY32NlxkZCH3M7h3koqZC4FuLBYJAHOfPRgoOYcWiO9vqzZCifJZCg1GLryqct5'
+        FBTOKEN = 'EAAGm0PX4ZCpsBAJJJPffLJYmCXLZAlfIgiq2ZBgx3e7mvHbWR63PztvONLwtNFVOgtWy0ufhCfIXcdQJD2Q43ZAIuE03PfIYFOgbUJ6TOtMjvU1G2QmJsW3wwLPGjFcHRoOQaF6m7w6BZCxfTSIsKv35ZA6vdPAWPk1US9jzTBCfri4H5VpTgff4MdTD73rS9Gxajy4abaLdZCAfpZCVJCDLck5NvHoArLe4VMo7mXFzJZBvfL2fNvSn1'
         self.session = pynder.Session(FBID, FBTOKEN)
     def get_recent_messages(self):
         session=self.session
@@ -35,7 +35,6 @@ class PynderService:
                     messages_dict['service'] = 'tinder'
             if len(messages_dict)!=0:
                 json_list.append(messages_dict)
-        print(json_list)
         return json_list
 
     def like_users(self):
@@ -54,19 +53,16 @@ class PynderService:
 def index():
     pyndersesh.like_users()
     messages=pyndersesh.get_recent_messages()
-
-    url = 'http://127.0.0.1:3000/'
+    url='http://127.0.0.1:3000/synthesize'
 
     json_mssg = [messages[0]]
     s = json.dumps(json_mssg) #convert to json
-    print(json.loads(s))
-    res = requests.post(url, json=s).json()
-    print(res)
+    res = requests.get(url, json=s)
 
 
-    jsondata = requests.get(url)
-    data = json.loads(jsondata)
-    pyndersesh.send_message(data['text'], data['id'])
+
+    data = json.loads(res.text)
+    pyndersesh.send_message(data['text'], messages[0]['id'])
 
     return render_template('index.html')
 
@@ -79,7 +75,8 @@ if __name__ == "__main__":
     HOST_NAME = os.getenv("VCAP_APP_HOST", "127.0.0.1")
     PORT_NUMBER = int(os.getenv("VCAP_APP_PORT", "8080"))
 
-    print(HOST_NAME, PORT_NUMBER)
+
+
     app.run(host=HOST_NAME, port=int(PORT_NUMBER), debug=True)
 
     # Start the server

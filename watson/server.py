@@ -18,11 +18,11 @@
 import os
 import requests
 import json
-from flask import Flask, render_template, request, Response, stream_with_context
+from flask import Flask, render_template, request, Response, stream_with_context, abort
 from watson_developer_cloud import ToneAnalyzerV3
 app = Flask(__name__)
 
-class ToneAnalayzerService:
+class ToneAnalyzerService:
     """Wrapper on the Text to Speech service"""
 
     def __init__(self):
@@ -32,29 +32,35 @@ class ToneAnalayzerService:
         """
         vcapServices = os.getenv("VCAP_SERVICES")
         # Local variables
-        self.url = "<url>"
-        self.username = "<username>"
-        self.password = "<password>"
+        # self.url = "<url>"
+        # self.username = "<username>"
+        # self.password = "<password>"
+        #
+        # if vcapServices is not None:
+        #     print("Parsing VCAP_SERVICES")
+        #     services = json.loads(vcapServices)
+        #     svcName = "tone_analyzer"
+        #     if svcName in services:
+        #         print("Text to Speech service found!")
+        #         svc = services[svcName][0]["credentials"]
+        #         self.url = svc["url"]
+        #         self.username = svc["username"]
+        #         self.password = svc["password"]
+        #         self.watson_module = ToneAnalyzerV3(
+        #             username=self.username,
+        #             password=self.password,
+        #             url=self.url,
+        #             version=ToneAnalyzerV3.latest_version)
+        #     else:
+        #         print("ERROR: The Text Analysis service you were looking for was not found")
 
-        if vcapServices is not None:
-            print("Parsing VCAP_SERVICES")
-            services = json.loads(vcapServices)
-            svcName = "tone_analyzer"
-            if svcName in services:
-                print("Text to Speech service found!")
-                svc = services[svcName][0]["credentials"]
-                self.url = svc["url"]
-                self.username = svc["username"]
-                self.password = svc["password"]
-                self.watson_module = ToneAnalyzerV3(
-                    username=self.username,
-                    password=self.password,
-                    url=self.url,
+
+        self.watson_module = ToneAnalyzerV3(
+                    username="8dd8976d-adb7-44aa-a1d5-ba57f2051bb2",
+                    password="XL2baWIDp5x1",
                     version=ToneAnalyzerV3.latest_version)
-            else:
-                print("ERROR: The Text Analysis service you were looking for was not found")
 
-    def synthesize(self, text, sentences=None):
+    def synthesize(self, text, service='tinder', sentences=None):
         """
         Returns the get HTTP response by doing a GET to
         /v1/synthesize with text, voice, accept
@@ -62,6 +68,8 @@ class ToneAnalayzerService:
         #if sentences is set then send it to tonal analysis
         if sentences:
             response = self.watson_module.tone(text,sentences=sentences)
+
+        return {'text':'Hello'}
         #TODO: Matt can you add your tonal analysis shit here
         #TODO: ship off to tf_url and return it's response
         pass
@@ -73,19 +81,22 @@ def index():
 
 @app.route('/synthesize', methods=['GET'])
 def synthesize():
-    text = request.args.get('text', '')
+    text = request.args.get('text', 'Hello')
+    service = request.args.get('service', 'tinder')
     sentences = eval(request.args.get('sentences','True'))
 
     headers = {}
-
-    if download:
-        headers['content-disposition'] = 'attachment; filename=transcript.ogg'
+    #
+    # if download:
+    #     headers['content-disposition'] = 'attachment; filename=transcript.ogg'
 
     try:
-        req = textToSpeech.synthesize(text, voice, accept)
-        return Response(stream_with_context(req.iter_content()),
-            headers=headers, content_type = req.headers['content-type'])
-    except Exception,e:
+        req = textToSpeech.synthesize(text, service, sentences)
+        # return Response(stream_with_context(req.iter_content()),
+        return Response(json.dumps(req),
+            headers=headers)
+            #headers=headers, content_type = req.headers['content-type'])
+    except Exception as e:
         abort(500)
 
 @app.errorhandler(500)

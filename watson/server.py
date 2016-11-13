@@ -67,12 +67,13 @@ class ToneAnalyzerService:
         """
         #if sentences is set then send it to tonal analysis
         if sentences:
-            response = self.watson_module.tone(text,sentences=sentences)
-
-        return {'text':'Hello'}
+        #     response = self.watson_module.tone(text,sentences=sentences)
+            tfurl = '127.0.0.1:8888/'
+            res = requests.post(tfurl, data = {'input': sentences[0]})        
+            return {'text':res}
         #TODO: Matt can you add your tonal analysis shit here
         #TODO: ship off to tf_url and return it's response
-        pass
+        return {'text':''}
 
 @app.route('/', methods=['GET'])
 def index():

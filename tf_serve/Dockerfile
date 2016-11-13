@@ -102,5 +102,7 @@ RUN tensorflow/tools/ci_build/builds/configured CPU \
 
 WORKDIR /root
 RUN pip install -r requirements.txt
+RUN git clone https://github.com/mlberkeley/hackathon_chatbot.git
+RUN cd hackathon_chatbot
 ENTRYPOINT ["python"]
-CMD ["server.py"]
+CMD ["tf_serve/server.py"]

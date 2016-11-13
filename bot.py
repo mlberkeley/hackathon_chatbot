@@ -28,7 +28,7 @@ def get_recent_messages(session):
             if len(recent_messages)!=0:
                 messages_dict['id'] = match.user.id
                 messages_dict['text'] = recent_messages
-                messages_dict['source'] = 'tinder'
+                messages_dict['service'] = 'tinder'
         if len(messages_dict)!=0:
             json_list.append(messages_dict)
     print(json_list)

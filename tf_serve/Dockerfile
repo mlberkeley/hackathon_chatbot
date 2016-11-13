@@ -100,13 +100,7 @@ RUN tensorflow/tools/ci_build/builds/configured CPU \
     rm -rf /root/.cache
 # Clean up pip wheel and Bazel cache when done.
 
-#install tensorflow serving
-WORKDIR /
-RUN git clone --recurse-submodules https://github.com/tensorflow/serving
-WORKDIR serving/tensorflow
-RUN ./configure
-WORKDIR ..
-RUN bazel test tensorflow_serving/...
-
 WORKDIR /root
-CMD ["/bin/bash"]
+RUN pip install -r requirements.txt
+ENTRYPOINT ["python"]
+CMD ["server.py"]

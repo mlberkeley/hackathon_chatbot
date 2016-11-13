@@ -43,7 +43,7 @@ import tensorflow as tf
 
 import data_utils
 import seq2seq_model
-from tensorflow.contrib.session_bundle import exporter
+
 
 tf.app.flags.DEFINE_float("learning_rate", 0.5, "Learning rate.")
 tf.app.flags.DEFINE_float("learning_rate_decay_factor", 0.99,
@@ -52,12 +52,12 @@ tf.app.flags.DEFINE_float("max_gradient_norm", 5.0,
                           "Clip gradients to this norm.")
 tf.app.flags.DEFINE_integer("batch_size", 64,
                             "Batch size to use during training.")
-tf.app.flags.DEFINE_integer("size", 1024, "Size of each model layer.")
+tf.app.flags.DEFINE_integer("size", 256, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("num_layers", 3, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("input_vocab_size", 40000, "Input speaker vocabulary size.")
 tf.app.flags.DEFINE_integer("output_vocab_size", 40000, "Output speaker vocabulary size.")
-tf.app.flags.DEFINE_string("data_dir", "/tmp/train", "Data directory")
-tf.app.flags.DEFINE_string("train_dir", "/tmp/train", "Training directory.")
+tf.app.flags.DEFINE_string("data_dir", "/tmp", "Data directory")
+tf.app.flags.DEFINE_string("train_dir", "/tmp", "Training directory.")
 tf.app.flags.DEFINE_integer("max_train_data_size", 0,
                             "Limit on the size of training data (0: no limit).")
 tf.app.flags.DEFINE_integer("steps_per_checkpoint", 200,
@@ -68,8 +68,6 @@ tf.app.flags.DEFINE_boolean("self_test", False,
                             "Run a self-test if this is set to True.")
 tf.app.flags.DEFINE_boolean("use_fp16", False,
                             "Train using fp16 instead of fp32.")
-tf.app.flags.DEFINE_boolean("export", False,
-                            "Export model.")
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -237,6 +235,7 @@ def decode():
     sys.stdout.flush()
     sentence = sys.stdin.readline()
     while sentence:
+      # Get token-ids for the input sentence.
       response = forward(sentence, in_vocab, sess, model, rev_out_vocab)
       print(response)
       print("> ", end="")
@@ -260,10 +259,8 @@ def forward(sentence, in_vocab, sess, model, rev_out_vocab):
       if data_utils.EOS_ID in outputs:
         outputs = outputs[:outputs.index(data_utils.EOS_ID)]
       # Print out French sentence corresponding to outputs.
-      print(outputs)
-      print(len(rev_out_vocab))
       return " ".join([tf.compat.as_str(rev_out_vocab[output]) for output in outputs])
-  
+
 def self_test():
   """Test the translation model."""
   with tf.Session() as sess:
@@ -289,8 +286,6 @@ def main(_):
     self_test()
   elif FLAGS.decode:
     decode()
-  elif FLAGS.export:
-    export_model()
   else:
     train()
 

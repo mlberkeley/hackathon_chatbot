@@ -13,9 +13,13 @@ def tone_output(text):
 
     for i in range(len(tones)):
         sentence = []
-        tone = tones[i]['tone_categories'][0]['tones']
-        for i in range(5):
-            sentence.append(tone[i].get('score'))
+        if tones[i]['tone_categories']:
+          tone = tones[i]['tone_categories'][0]['tones']
+          for i in range(5):
+              sentence.append(tone[i].get('score'))
+        else:
+          for i in range(5):
+            sentence.append(0)
         sentences.append(sentence)
 
     return sentences

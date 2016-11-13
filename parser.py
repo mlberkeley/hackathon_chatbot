@@ -1,6 +1,9 @@
 from html.parser import HTMLParser
 from datetime import datetime
 import re
+import os
+from random import shuffle
+
 
 class FBMParser(HTMLParser):
 
@@ -53,7 +56,7 @@ class FBMParser(HTMLParser):
 			
 
 
-def parseCorpus(filename):
+def parseFBCorpus(filename):
 	with open(filename) as f:
 		data = f.read()
 	parser = FBMParser()
@@ -62,7 +65,7 @@ def parseCorpus(filename):
 	return parser.threads
 
 def createVocabFiles(filename, user):
-	threads = parseCorpus(filename)
+	threads = parseFBCorpus(filename)
 	with open('inputVocab.txt', 'w') as f1:
 		with open('outputVocab.txt', 'w') as f2:
 			for thread in threads:
@@ -72,15 +75,41 @@ def createVocabFiles(filename, user):
 				for message in thread['messages']:
 					if message['sender'] == user and not responseNext:
 						if 'content' in message:
-							pair[0] += re.sub(r'\\n', r'', message['content'])
+							pair[0] += re.sub(r'\n', r'', message['content'])
 							responseNext = True
-					elif responseNext and not pairFinished:
+					elif responseNext and not pair[1]:
 						if 'content' in message:
-							pair[1] += re.sub(r'\\n', r'', message['content'])
-							pairFinished = True
-					elif pairFinished:
+							pair[1] += re.sub(r'\n', r'', message['content'])
+					if pair[0] and pair[1]:
 						f2.write(pair[0] + '\n')
 						f1.write(pair[1] + '\n')
 						pairFinished = False
 						responseNext = False
 						pair = ['', '']
+
+
+UP_SAMPLE_NUM = 50
+def makeCombinedDataset(filename, user):
+	createVocabFiles(filename, user)
+	with open('inputVocab.txt', 'r') as i1, open('outputVocab.txt', 'r') as o1, \
+		 open('data/train.enc', 'r', errors='ignore') as i2, open('data/train.dec', 'r', errors='ignore') as o2,  \
+		 open('temp.in', 'w') as dataIn, open('temp.out', 'w') as dataOut:
+		for fbInLine, fbOutLine in zip(i1, o1):
+			movieInLine = i2.readline()
+			movieOutLine = o2.readline()
+			for _ in range(UP_SAMPLE_NUM):
+				dataIn.write(str(fbInLine))
+				dataOut.write(str(fbOutLine))
+			dataIn.write(str(movieInLine))
+			dataOut.write(str(movieOutLine))
+	with open('temp.in', 'r') as dataIn, open('temp.out', 'r') as dataOut:
+		data = []
+		for tup in zip(dataIn, dataOut):
+			data.append(tup)
+	shuffle(data)
+	with open('trainData.in', 'w') as dataIn, open('temp.out', 'w') as dataOut:
+		for tup in data:
+			dataIn.write(str(tup[0]))
+			dataOut.write(str(tup[1]))
+
+

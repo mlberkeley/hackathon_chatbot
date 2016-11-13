@@ -48,25 +48,14 @@ class TwilioService:
 def index():
     messages=twiliosesh.get_recent_messages()
 
-	url = 'http://127.0.0.1:3000/synthesize'
-
-    data = messages[0]
-    result = requests.post(url, json=json.dumps(data))
-
-    r = requests.get(url)
-    json_data = json.load(r)
-
-    url = 'localhost:8080/'
+    url='http://127.0.0.1:3000/synthesize'
 
     json_mssg = [messages[0]]
     s = json.dumps(json_mssg) #convert to json
-    res = requests.post(url, json=s).json()
-    print(res)
+    res = requests.get(url, json=s)
 
-
-    jsondata = requests.get(url)
-    data = json.loads(jsondata)
-    twiliosesh.send_message(data['text'], data['id'])
+    data = json.loads(res.text)
+    twiliosesh.send_message(data['text'], json_mssg[0]['number'])
 
     return render_template('index.html')
 

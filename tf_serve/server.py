@@ -37,8 +37,8 @@ server = None
 if __name__ == "__main__":
     server = TFService()
 
-    HOST_NAME = "127.0.0.1"
-    port = 8888
+    HOST_NAME = "0.0.0.0"
+    port = 6666
     app.run(host=HOST_NAME, port=port, debug=False)
 
     # Start the server

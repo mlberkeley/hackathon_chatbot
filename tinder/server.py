@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # Get host/port from the Bluemix environment, or default to local
     #TODO: Change this so that it can run on cycle
-    HOST_NAME = os.getenv("VCAP_APP_HOST", "127.0.0.1")
+    HOST_NAME = os.getenv("VCAP_APP_HOST", "0.0.0.0")
     PORT_NUMBER = int(os.getenv("VCAP_APP_PORT", "8080"))
 
 

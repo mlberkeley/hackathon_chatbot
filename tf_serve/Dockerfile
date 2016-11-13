@@ -105,10 +105,5 @@ RUN ./configure
 WORKDIR ..
 RUN bazel test tensorflow_serving/...
 
-# TensorBoard
-EXPOSE 6006
-# IPython
-EXPOSE 8888
-
 WORKDIR /root
 CMD ["/bin/bash"]

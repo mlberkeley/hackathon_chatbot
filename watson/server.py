@@ -67,7 +67,7 @@ class ToneAnalyzerService:
         """
         #if sentences is set then send it to tonal analysis
         if text:
-        #     response = self.watson_module.tone(text,sentences=sentences)
+            response = self.watson_module.tone(text,sentences=sentences)
             tfurl = 'http://172.18.0.6:8081/'
             res = requests.post(tfurl, data = {'input': text})        
             return {'text':res.text}

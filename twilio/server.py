@@ -1,15 +1,15 @@
-from twilio.rest import TwilioRestClient 
+from twilio.rest import TwilioRestClient
 import json
 from flask import Flask, render_template, request, Response, stream_with_context
 import requests
 app = Flask(__name__)
 
 class TwilioService:
-	
+
 
 	def __init__(self):
-		ACCOUNT_SID = "ACa703617b4913594018f631be3c2b2cdb" 
-		AUTH_TOKEN = "810efbfaa704414400ab324a75661eea" 
+		ACCOUNT_SID = "ACa703617b4913594018f631be3c2b2cdb"
+		AUTH_TOKEN = "810efbfaa704414400ab324a75661eea"
 		NUMBER = "+16503628351"
 		self.client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
 
@@ -38,13 +38,31 @@ class TwilioService:
 	def send_message(self,msg,user):
 		pass
 
+
 @app.route('/', methods=['GET'])
 def index():
     messages=twiliosesh.get_recent_messages()
-    #TODO: send messages[0] to main flask server
 
-    #TODO: send response from flask server back to tinder with pyndersesh.send_message
-    
+	url = 'http://127.0.0.1/3000'
+
+	data = messages[0]
+	result = requests.post(url, json=json.dumps(data))
+
+	r = requests.get(url)
+	json_data = json.load(r)
+
+    url = 'localhost:8080/'
+
+	json_mssg = [messages[0]]
+	s = json.dumps(json_mssg) #convert to json
+	res = requests.post(url, json=s).json()
+	print(res)
+
+
+	jsondata = requests.get(url)
+	data = json.loads(jsondata)
+	twiliosesh.send_message(data['text'], data['id'])
+
     return render_template('index.html')
 
 twiliosesh=None

@@ -88,7 +88,7 @@ def createVocabFiles(filename, user):
 						pair = ['', '']
 
 
-UP_SAMPLE_NUM = 50
+UP_SAMPLE_NUM = 10
 def makeCombinedDataset(filename, user):
 	createVocabFiles(filename, user)
 	with open('inputVocab.txt', 'r') as i1, open('outputVocab.txt', 'r') as o1, \
@@ -106,9 +106,7 @@ def makeCombinedDataset(filename, user):
 		data = []
 		for tup in zip(dataIn, dataOut):
 			data.append(tup)
-	print(data)
 	shuffle(data)
-	print(data)
 	with open('trainData.in', 'w') as dataIn, open('trainData.out', 'w') as dataOut:
 		for tup in data:
 			dataIn.write(str(tup[0]))
@@ -121,20 +119,32 @@ def readTrainDataFile(filename):
 	count = 0
 	with open(filename, 'r') as f:
 	    for line in f:
-	        if count >= 1000:
+	        if count >= 100:
 	        	dataBatches.append(currentData)
 	        	currentData = ''
 	        	count = 0
 	        count += 1
 	        currentData += line
-	for data in dataBatches:      
+	ret = []
+	for data in dataBatches[:]:      
 		data = re.sub(r'[.]', r' ', data)
 		data = re.sub(r'\n', '. ', data)
-		with open(filename + 'batch1', 'w') as f:
-			f.write(data)
-	return dataBatches
-def batchTone(filename):
-    dataBatches = readTrainDataFile(filename)
-    for data in dataBatches:
-    	tones = tone_output(data)
-    return tones
+		ret.append(data)
+
+	print(len(ret))
+	return ret
+def batchTone(filename, restartPoint):
+	dataBatches = readTrainDataFile(filename)
+	total = 0
+	count = 0
+	with open('tones.in', 'a') as f:
+		for data in dataBatches:
+			count += 1
+			if count > restartPoint:
+				to = tone_output(data)
+				total += len(to)
+				print(total)
+				for scorevec in to:
+					for score in scorevec:
+						f.write(str(score) + ' ')
+					f.write('\n')

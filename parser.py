@@ -3,7 +3,7 @@ from datetime import datetime
 import re
 import os
 from random import shuffle
-
+from tonal_analysis import tone_output
 
 class FBMParser(HTMLParser):
 
@@ -106,10 +106,35 @@ def makeCombinedDataset(filename, user):
 		data = []
 		for tup in zip(dataIn, dataOut):
 			data.append(tup)
+	print(data)
 	shuffle(data)
-	with open('trainData.in', 'w') as dataIn, open('temp.out', 'w') as dataOut:
+	print(data)
+	with open('trainData.in', 'w') as dataIn, open('trainData.out', 'w') as dataOut:
 		for tup in data:
 			dataIn.write(str(tup[0]))
 			dataOut.write(str(tup[1]))
 
 
+def readTrainDataFile(filename):
+	dataBatches = []
+	currentData = ''
+	count = 0
+	with open(filename, 'r') as f:
+	    for line in f:
+	        if count >= 1000:
+	        	dataBatches.append(currentData)
+	        	currentData = ''
+	        	count = 0
+	        count += 1
+	        currentData += line
+	for data in dataBatches:      
+		data = re.sub(r'[.]', r' ', data)
+		data = re.sub(r'\n', '. ', data)
+		with open(filename + 'batch1', 'w') as f:
+			f.write(data)
+	return dataBatches
+def batchTone(filename):
+    dataBatches = readTrainDataFile(filename)
+    for data in dataBatches:
+    	tones = tone_output(data)
+    return tones

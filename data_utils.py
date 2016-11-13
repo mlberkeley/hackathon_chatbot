@@ -50,8 +50,8 @@ def basic_tokenizer(sentence):
   words = []
   
   for space_separated_fragment in sentence.strip().split():
-    print(space_separated_fragment)
-    space_separated_fragment = bytes(space_separated_fragment, 'utf-8')
+    if type(space_separated_fragment) == str:
+      space_separated_fragment = bytes(space_separated_fragment, 'utf-8')
     words.extend(_WORD_SPLIT.split(space_separated_fragment))
   return [w for w in words if w]
 

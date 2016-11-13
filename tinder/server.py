@@ -9,7 +9,7 @@ class PynderService:
 
     def __init__(self):
         FBID = '122078121605611'
-        FBTOKEN = 'EAAGm0PX4ZCpsBAJJJPffLJYmCXLZAlfIgiq2ZBgx3e7mvHbWR63PztvONLwtNFVOgtWy0ufhCfIXcdQJD2Q43ZAIuE03PfIYFOgbUJ6TOtMjvU1G2QmJsW3wwLPGjFcHRoOQaF6m7w6BZCxfTSIsKv35ZA6vdPAWPk1US9jzTBCfri4H5VpTgff4MdTD73rS9Gxajy4abaLdZCAfpZCVJCDLck5NvHoArLe4VMo7mXFzJZBvfL2fNvSn1'
+        FBTOKEN = 'EAAGm0PX4ZCpsBAOZCyZCBZCnsuEcgP9MT8Jrb58nrqAGTFfo7X6M4ZBm5r7j1FLjBOiDOM2ZBYEIV0fZB4ESd7rZAdKTUZAVeazvf49ZCl0b8tWuGvGqZAk7bAmv5ElbZCu283B4JzuWEg4MHSZBcUin4NryvxMswQsrw6kZCUZBeZCVqaIgHoU6unKsnEViS6g3z9D5c6P9iFZBJOiPtZASZCtlGZBDYGaMdN7ab13uOgEiJ6kW3LdAPGHVvzoHecIr'
         self.session = pynder.Session(FBID, FBTOKEN)
     def get_recent_messages(self):
         session=self.session
@@ -51,18 +51,17 @@ class PynderService:
 
 @app.route('/', methods=['GET'])
 def index():
-    pyndersesh.like_users()
+   # pyndersesh.like_users()
     messages=pyndersesh.get_recent_messages()
-    url='http://127.0.0.1:3000/synthesize'
+    url='http://172.18.0.5:3000/synthesize'
+    for i in range(len(messages)):
+        json_mssg = messages[i]
+        s = json.dumps(json_mssg) #convert to json
+        res = requests.get(url, params=json_mssg)
 
-    json_mssg = [messages[0]]
-    s = json.dumps(json_mssg) #convert to json
-    res = requests.get(url, json=s)
+        print(res.text)
 
-
-
-    data = json.loads(res.text)
-    pyndersesh.send_message(data['text'], messages[0]['id'])
+        # pyndersesh.send_message(res.text, messages[i]['id'])
 
     return render_template('index.html')
 
@@ -80,4 +79,4 @@ if __name__ == "__main__":
     app.run(host=HOST_NAME, port=int(PORT_NUMBER), debug=True)
 
     # Start the server
-    print("Listening on %s:%d" % (HOST_NAME, port))
+    print("Listening on %s:%d" % (HOST_NAME, PORT_NUMBER))

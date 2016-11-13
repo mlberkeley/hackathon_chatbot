@@ -48,7 +48,7 @@ class TwilioService:
 def index():
     messages=twiliosesh.get_recent_messages()
 
-    url='http://127.0.0.1:3000/synthesize'
+    url='http://172.18.0.5:3000/synthesize'
 
     json_mssg = [messages[0]]
     s = json.dumps(json_mssg) #convert to json

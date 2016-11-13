@@ -29,8 +29,9 @@ class TFService:
 def index():
 
     sentence = request.form['input']
+    print(sentence)
     response = chatbot.forward(sentence, server.in_vocab, server.sess, server.model, server.rev_out_vocab)
-
+    print(response)
     return response
 
 server = None
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     server = TFService()
 
     HOST_NAME = "0.0.0.0"
-    port = 6666
+    port = 8081
     app.run(host=HOST_NAME, port=port, debug=False)
 
     # Start the server

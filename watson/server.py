@@ -66,11 +66,11 @@ class ToneAnalyzerService:
         /v1/synthesize with text, voice, accept
         """
         #if sentences is set then send it to tonal analysis
-        if sentences:
+        if text:
         #     response = self.watson_module.tone(text,sentences=sentences)
-            tfurl = '127.0.0.1:6666/'
-            res = requests.post(tfurl, data = {'input': sentences[0]})        
-            return {'text':res}
+            tfurl = 'http://172.18.0.6:8081/'
+            res = requests.post(tfurl, data = {'input': text})        
+            return {'text':res.text}
         #TODO: Matt can you add your tonal analysis shit here
         #TODO: ship off to tf_url and return it's response
         return {'text':''}
@@ -85,7 +85,7 @@ def synthesize():
     text = request.args.get('text', 'Hello')
     service = request.args.get('service', 'tinder')
     sentences = eval(request.args.get('sentences','True'))
-
+    print(request.args, text)   
     headers = {}
     #
     # if download:
@@ -94,10 +94,11 @@ def synthesize():
     try:
         req = textToSpeech.synthesize(text, service, sentences)
         # return Response(stream_with_context(req.iter_content()),
-        return Response(json.dumps(req),
-            headers=headers)
+        print(req.text)
+        return Response(req.text)
             #headers=headers, content_type = req.headers['content-type'])
     except Exception as e:
+        print(e)
         abort(500)
 
 @app.errorhandler(500)

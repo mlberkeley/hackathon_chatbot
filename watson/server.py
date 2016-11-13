@@ -22,7 +22,7 @@ from flask import Flask, render_template, request, Response, stream_with_context
 from watson_developer_cloud import ToneAnalyzerV3
 app = Flask(__name__)
 
-class TextToSpeechService:
+class ToneAnalayzerService:
     """Wrapper on the Text to Speech service"""
 
     def __init__(self):
@@ -59,14 +59,16 @@ class TextToSpeechService:
         Returns the get HTTP response by doing a GET to
         /v1/synthesize with text, voice, accept
         """
-
-        response = self.watson_module.tone(text,sentences=sentences)
+        #if sentences is set then send it to tonal analysis
+        if sentences:
+            response = self.watson_module.tone(text,sentences=sentences)
         #TODO: Matt can you add your tonal analysis shit here
         #TODO: ship off to tf_url and return it's response
         pass
 
 @app.route('/', methods=['GET'])
 def index():
+    #TODO: switch this to render a markdown template with blurb about our project
     return render_template('index.html')
 
 @app.route('/synthesize', methods=['GET'])
@@ -94,7 +96,7 @@ def internal_Server_error(error):
 textToSpeech = None
 
 if __name__ == "__main__":
-    textToSpeech = TextToSpeechService()
+    textToSpeech = ToneAnalyzerService()
 
     # Get host/port from the Bluemix environment, or default to local
     #TODO: Change this so that it can run on cycle

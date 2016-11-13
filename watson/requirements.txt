@@ -1,2 +1,4 @@
 Flask
 requests
+watson-developer-cloud
+protobuf==2.6.1

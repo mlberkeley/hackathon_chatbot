@@ -1,0 +1,11 @@
+declared-services:
+  tone-analyzer-service-standard:
+    type: tone_analyzer
+    plan: standard
+applications:
+- name: tone-analyzer-python
+  command: python server.py
+  path: .
+  memory: 512M
+  services:
+  - tone-analyzer-service-standard

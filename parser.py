@@ -94,12 +94,12 @@ def makeCombinedDataset(filename, user):
 	with open('inputVocab.txt', 'r') as i1, open('outputVocab.txt', 'r') as o1, \
 		 open('data/train.enc', 'r', errors='ignore') as i2, open('data/train.dec', 'r', errors='ignore') as o2,  \
 		 open('temp.in', 'w') as dataIn, open('temp.out', 'w') as dataOut:
-		for fbInLine, fbOutLine in zip(i1, o1):
-			movieInLine = i2.readline()
-			movieOutLine = o2.readline()
-			for _ in range(UP_SAMPLE_NUM):
-				dataIn.write(str(fbInLine))
-				dataOut.write(str(fbOutLine))
+		for movieInLine, movieOutLine in zip(i2, o2):
+			# movieInLine = i2.readline()
+			# movieOutLine = o2.readline()
+			# for _ in range(UP_SAMPLE_NUM):
+			# 	dataIn.write(str(fbInLine))
+			# 	dataOut.write(str(fbOutLine))
 			dataIn.write(str(movieInLine))
 			dataOut.write(str(movieOutLine))
 	with open('temp.in', 'r') as dataIn, open('temp.out', 'r') as dataOut:
